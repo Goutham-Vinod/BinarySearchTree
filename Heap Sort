@@ -1,0 +1,74 @@
+class MaxHeap {
+  MaxHeap();
+  MaxHeap.withDefault(List<int> array) {
+    buildHeap(array,array.length-1);
+  }
+
+  List<int> heap = [];
+
+  void buildHeap(List<int> array,int endIndex) {
+    heap = array;
+    for (int i = parent(endIndex); i >= 0; i--) {
+      shiftDown(i,endIndex);
+    }
+  }
+
+  void shiftDown(int currentIdx,int endIndex) {
+    int leftIdx = leftChild(currentIdx);
+    while (leftIdx <= endIndex) {
+      int rightIdx = rightChild(currentIdx);
+      int idxToShift;
+      if (rightIdx <= endIndex && heap[rightIdx] > heap[leftIdx])
+      {
+        idxToShift = rightIdx;
+      } else {
+        idxToShift = leftIdx;
+      }
+      if (heap[currentIdx] < heap[idxToShift]) {
+        swap(heap, currentIdx, idxToShift);
+        currentIdx = idxToShift;
+        leftIdx = leftChild(currentIdx);
+      } else {
+        return;
+      }
+    }
+  }
+
+  void swap(array, index1, index2) {
+    int temp = array[index1];
+    array[index1] = array[index2];
+    array[index2] = temp;
+  }
+
+  int leftChild(int i) {
+    return (i * 2) + 1;
+  }
+
+  int rightChild(int i) {
+    return (i * 2) + 2;
+  }
+
+  int parent(int i) {
+    return ((i - 1) / 2).floor();
+  }
+  
+  heapSort(){
+    for(int i= heap.length-1;i>=0;i--){
+      shiftDown(0,i);
+      swap(heap,0,i);
+    }
+  }
+
+  void display() {
+    for (int i = 0; i < heap.length; i++) {
+      print(heap[i]);
+    }
+  }
+}
+
+void main() {
+  List<int> array = [4,10,3,5,1];
+  MaxHeap heap = MaxHeap.withDefault(array);
+  heap.heapSort();
+  heap.display();
+}
