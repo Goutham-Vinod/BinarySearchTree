@@ -1,0 +1,87 @@
+import 'dart:collection';
+// import 'dart:io';
+
+class Graph {
+  Map<int, List<int>> map = {};
+
+  addVertex(int data) {
+    map[data] = [];
+  }
+
+  insert(int vertex, int edge, bool isBidirectinal) {
+    if (!map.containsKey(vertex)) {
+      addVertex(vertex);
+    }
+
+    if (!map.containsKey(edge)) {
+      addVertex(edge);
+    }
+
+    map[vertex]!.add(edge);
+
+    if (isBidirectinal) {
+      map[edge]!.add(vertex);
+    }
+  }
+
+  void bfs(int start) {
+  var queue = Queue<int>();
+  var visited = <int>{};
+
+  queue.add(start);
+  visited.add(start);
+
+  while (queue.isNotEmpty) {
+    var current = queue.removeFirst();
+    print('$current ');
+
+    for (var neighbor in map[current]!) {
+      if (!visited.contains(neighbor)) {
+        visited.add(neighbor);
+        queue.add(neighbor);
+      }
+    }
+  }
+  print("   ");
+}
+
+void dfs(int start) {
+  Set<int> visited = {};
+  dfsHelper(start, visited);
+}
+
+void dfsHelper(int vertex, Set<int> visited) {
+  visited.add(vertex);
+  print(vertex);
+
+  for (int neighbor in map[vertex]!) {
+    if (!visited.contains(neighbor)) {
+      dfsHelper(neighbor, visited);
+    }
+  }
+}
+  void display() {
+    StringBuffer output = StringBuffer();
+    for (int k in map.keys) {
+      output.write('$k: ');
+      for (int val in map[k]!) {
+        output.write('$val ');
+      }
+      output.writeln();
+    }
+    print(output.toString());
+  }
+}
+
+void main(List<String> args) {
+  Graph g = Graph();
+g.insert(3, 5, true);
+  g.insert(3, 4, true);
+  g.insert(5, 6, false);
+
+ print('BFS');
+  g.bfs(3);
+
+  print('DFS');
+  g.dfs(3);
+}
