@@ -1,0 +1,54 @@
+class TrieNode {
+  Map<String, TrieNode?> children = {};
+}
+
+class Trie {
+  Trie(String str) {
+    populateSuffixTrie(str);
+  }
+
+  TrieNode? root = TrieNode();
+  String endSymbol = '*';
+
+  void populateSuffixTrie(String str) {
+    for (int i = 0; i < str.length; i++) {
+      insertSubstringStartingAt(i, str);
+    }
+  }
+
+  void insertSubstringStartingAt(int index, String str) {
+    TrieNode? node = root;
+
+    for (int i = index; i < str.length; i++) {
+      String letter = str[i];
+      if (node != null && !node.children.containsKey(letter)) {
+        // add newNode if there's no node with letter
+        TrieNode newNode = TrieNode();
+        node.children[letter] = newNode;
+      }
+      node = node?.children[
+          letter]; // update the node (change currentNode to nextNode)
+    }
+    node?.children[endSymbol] = null;
+  }
+
+  bool contains(String str) {
+    if(root == null){print("Root is null");return false;}
+    TrieNode node = root!;
+    for (int i = 0; i < str.length; i++) {
+      String letter = str[i];
+      if (!node.children.containsKey(letter)) {
+        return false;
+      }
+      node = node.children[letter]!;
+    }
+    return node.children.containsKey(endSymbol);
+  }
+}
+
+
+
+void main(){
+  Trie trie = Trie("@goutham_vinod_");
+  print(trie.contains('vinod_'));
+}
