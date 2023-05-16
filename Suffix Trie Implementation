@@ -1,54 +1,76 @@
 class TrieNode {
-  Map<String, TrieNode?> children = {};
+  late Map<String, TrieNode> children;
+  late bool isEndOfWord;
+
+  TrieNode() {
+    children = {};
+    isEndOfWord = false;
+  }
 }
 
 class Trie {
-  Trie(String str) {
-    populateSuffixTrie(str);
+  late TrieNode root;
+
+  Trie() {
+    root = TrieNode();
   }
 
-  TrieNode? root = TrieNode();
-  String endSymbol = '*';
+  void insert(String word) {
+    TrieNode current = root;
 
-  void populateSuffixTrie(String str) {
-    for (int i = 0; i < str.length; i++) {
-      insertSubstringStartingAt(i, str);
-    }
-  }
-
-  void insertSubstringStartingAt(int index, String str) {
-    TrieNode? node = root;
-
-    for (int i = index; i < str.length; i++) {
-      String letter = str[i];
-      if (node != null && !node.children.containsKey(letter)) {
-        // add newNode if there's no node with letter
-        TrieNode newNode = TrieNode();
-        node.children[letter] = newNode;
+    for (int i = 0; i < word.length; i++) {
+      String char = word[i];
+      if (!current.children.containsKey(char)) {
+        current.children[char] = TrieNode();
       }
-      node = node?.children[
-          letter]; // update the node (change currentNode to nextNode)
+      current = current.children[char]!;
     }
-    node?.children[endSymbol] = null;
+    current.isEndOfWord = true;
   }
 
-  bool contains(String str) {
-    if(root == null){print("Root is null");return false;}
-    TrieNode node = root!;
-    for (int i = 0; i < str.length; i++) {
-      String letter = str[i];
-      if (!node.children.containsKey(letter)) {
+  bool search(String word) {
+    TrieNode current = root;
+
+    for (int i = 0; i < word.length; i++) {
+      String char = word[i];
+      if (!current.children.containsKey(char)) {
         return false;
       }
-      node = node.children[letter]!;
+      current = current.children[char]!;
     }
-    return node.children.containsKey(endSymbol);
+
+    return current.isEndOfWord;
+  }
+
+  bool startsWith(String prefix) {
+    TrieNode current = root;
+
+    for (int i = 0; i < prefix.length; i++) {
+      String char = prefix[i];
+      if (!current.children.containsKey(char)) {
+        return false;
+      }
+      current = current.children[char]!;
+    }
+
+    return true;
   }
 }
 
+void main() {
+  Trie trie = Trie();
 
+  trie.insert("hello");
+  trie.insert("world");
+  trie.insert("hey");
 
-void main(){
-  Trie trie = Trie("@goutham_vinod_");
-  print(trie.contains('vinod_'));
+  print(trie.search("hello"));
+  print(trie.search("world")); 
+  print(trie.search("hey")); 
+  print(trie.search("hi")); 
+
+  print(trie.startsWith("he")); 
+  print(trie.startsWith("wor")); 
+  print(trie.startsWith("hey"));
+  print(trie.startsWith("hii")); 
 }
